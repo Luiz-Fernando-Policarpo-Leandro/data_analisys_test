@@ -59,7 +59,8 @@ def run():
             downloads.mkdir(exist_ok=True)
 
             # lista arquivos do site
-            files_list = list_files_api(verbose=True)
+            files_list = (list_files_api(verbose=True))[-3:]
+            print(files_list)
             if not files_list:
                 print("[ERRO] Nenhum arquivo encontrado na API.")
                 return
