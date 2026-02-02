@@ -49,16 +49,27 @@ def normalize_and_parse(df, fname=None):
     df["Trimestre"] = df["_trimestre"].astype("Int64")
     return df[["REG_ANS", "CNPJ", "RazaoSocial", "Trimestre", "Ano", "ValorDespesas"]]
 
-def separar_consolidados(df_full: pd.DataFrame):
-    df_full["CNPJ_valido"] = df_full["CNPJ"].apply(valida_cnpj)
-    df_full["valor_invalido"] = df_full["ValorDespesas"] <= 0
+def separar_consolidados(df_full: pd.DataFrame, validar_cnpj: bool = True ):
+    df = df_full.copy()
 
-    df_validos = df_full[(df_full["ValorDespesas"] > 0) & df_full["CNPJ_valido"]].copy()
-    df_negativos = df_full[df_full["ValorDespesas"] < 0].copy()
-    df_zero = df_full[df_full["ValorDespesas"] == 0].copy()
-    df_cnpj_invalido = df_full[~df_full["CNPJ_valido"]].copy()
+    if validar_cnpj:
+        df["CNPJ_valido"] = df["CNPJ"].apply(valida_cnpj)
+    else:
+        df["CNPJ_valido"] = True
 
-    for df in [df_validos, df_negativos, df_zero, df_cnpj_invalido]:
-        df.drop(columns=[c for c in ["CNPJ_valido","valor_invalido"] if c in df.columns], inplace=True)
+    df["valor_invalido"] = df["ValorDespesas"] <= 0
 
-    return df_validos, df_negativos,df_zero, df_cnpj_invalido 
+    df_validos = df[
+        (df["ValorDespesas"] > 0) & (df["CNPJ_valido"])
+    ].copy()
+
+    df_negativos = df[df["ValorDespesas"] < 0].copy()
+    df_zero = df[df["ValorDespesas"] == 0].copy()
+    df_cnpj_invalido = df[~df["CNPJ_valido"]].copy()
+
+    col_aux = ["CNPJ_valido", "valor_invalido"]
+    for d in (df_validos, df_negativos, df_zero, df_cnpj_invalido):
+        d.drop(columns=[c for c in col_aux if c in d.columns], inplace=True)
+
+    return df_validos, df_negativos, df_zero, df_cnpj_invalido
+
