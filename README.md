@@ -32,22 +32,37 @@ A aplicação é **idempotente**: caso o arquivo consolidado já exista, o pipel
 
 ```
 app/
-├─ run_integration.py          # Script principal de execução
-├─ requirements.txt            # Dependências do projeto
-├─ README.md                   # Documentação geral
+├─ data/                     # Dados processados e resultados finais
+│  ├─ despesas/              # Dados de despesas consolidados
+│  │  ├─ valido/             # Registros válidos após validação
+│  │  ├─ invalidos/          # Registros inválidos segregados por regra
+│  │  └─ consolidado_despesas.csv
+│  │
+│  └─ operadoras/            # Dados enriquecidos com cadastro ANS
+│     ├─ Relatorio_cadop.csv
+│     ├─ despesas_enriquecidas.csv
+│     └─ despesas_agregadas.csv
 │
-├─ docs/
-│  ├─ PARTE_1.md               # Detalhamento técnico da Parte 1 do desafio
-│  └─ files/
-│     └─ despesas/
-│        ├─ valido/
-│        │  └─ consolidado_validos.csv
-│        ├─ invalidos/
-│        │  ├─ consolidado_numero_negativo_invalido.csv
-│        │  ├─ consolidado_valor_zero.csv
-│        │  └─ consolidado_cnpj_invalido.csv
-│        ├─ consolidado_despesas.csv
-│        └─ consolidado_despesas.zip
+├─ docs/                     # Documentação técnica
+│  ├─ PARTE_1.md             # Coleta, normalização e consolidação
+│  └─ PARTE_2.md             # Validação, enriquecimento e agregação
+│
+├─ scripts/                  # Scripts executáveis
+│  ├─ run_integration.py     # Pipeline da Parte 1
+│  └─ run_aggregate.py       # Pipeline da Parte 2
+│
+├─ utils/                    # Funções reutilizáveis
+│  ├─ file_utils.py          # Download, leitura e extração de arquivos
+│  ├─ cnpj_utils.py          # Normalização e validação de CNPJ
+│  ├─ enrich_utils.py        # Enriquecimento com dados cadastrais
+│  ├─ aggregate_utils.py     # Agregações estatísticas
+│  └─ dataframe_utils.py     # Utilitários genéricos de DataFrame
+│
+├─ consolidado_despesas.zip  # Entrega Parte 1
+├─ operadoras.zip            # Entrega Parte 2
+├─ requirements.txt
+└─ README.md
+
 ```
 
 ---
@@ -103,7 +118,7 @@ pip install -r requirements.txt
 Com o ambiente virtual ativo:
 
 ```bash
-python run_integration.py
+python main.py
 ```
 
 Durante a execução, o programa:
@@ -112,9 +127,7 @@ Durante a execução, o programa:
 * Realiza downloads paralelos (I/O bound)
 * Processa os arquivos em paralelo (CPU bound)
 * Normaliza estruturas diferentes automaticamente
-* Gera os arquivos finais na pasta `docs/files/despesas/`
-
-Caso `consolidado_despesas.csv` já exista, o script **utiliza o arquivo existente**.
+* Gera os arquivos finais na pasta `/data`
 
 ---
 
@@ -136,9 +149,15 @@ Caso `consolidado_despesas.csv` já exista, o script **utiliza o arquivo existen
 * `invalidos/consolidado_valor_zero.csv`
 * `invalidos/consolidado_cnpj_invalido.csv`
 
-### Compactado
+**Operadoras**
+* `despesas_agregadas.csv`
+* `despesas_enriquecidas.csv`
+* `Relatorio_cadop.csv`
+
+### Compactados
 
 * `consolidado_despesas.zip`
+* `operadoras.zip`
 
 ---
 
@@ -154,11 +173,12 @@ Essas decisões foram tomadas para preservar **rastreabilidade**, **auditabilida
 
 ---
 
-## Parte 1 – Detalhamento técnico
+## Detalhamento técnico
 
-A explicação detalhada da implementação da **Parte 1 do projeto** — incluindo decisões técnicas, trade-offs, estratégia de parsing, paralelismo e normalização — está documentada separadamente.
+A explicação detalhada da implementação da **Das partes do projeto** — incluindo decisões técnicas, trade-offs, estratégia de parsing, paralelismo e normalização — está documentada separadamente.
 
-➡️ **Consulte:** [docs/PARTE_1.md](docs/PARTE_1.md)
+➡️ **Consulte:** [1. TESTE DE INTEGRAÇÃO COM API PÚBLICA](docs/PARTE_1.md)
+➡️ **Consulte:** [2. TESTE DE TRANSFORMAÇÃO E VALIDAÇÃO DE DADOS](docs/PARTE_2.md)
 
 ---
 
@@ -171,6 +191,8 @@ A explicação detalhada da implementação da **Parte 1 do projeto** — inclui
 * Código tolerante a múltiplos layouts e inconsistências de origem
 
 ---
+
+
 
 ## Finalidade
 
