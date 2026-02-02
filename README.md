@@ -178,6 +178,7 @@ Essas decisões foram tomadas para preservar **rastreabilidade**, **auditabilida
 A explicação detalhada da implementação da **Das partes do projeto** — incluindo decisões técnicas, trade-offs, estratégia de parsing, paralelismo e normalização — está documentada separadamente.
 
 ➡️ **Consulte:** [1. TESTE DE INTEGRAÇÃO COM API PÚBLICA](docs/PARTE_1.md)
+
 ➡️ **Consulte:** [2. TESTE DE TRANSFORMAÇÃO E VALIDAÇÃO DE DADOS](docs/PARTE_2.md)
 
 ---
