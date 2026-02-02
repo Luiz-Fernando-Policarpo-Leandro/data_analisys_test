@@ -12,7 +12,7 @@ INPUT_VALIDOS = BASE_DIR / "valido" / "consolidado_validos.csv"
 OUTPUT_ENRIQUECIDO = OPERADORAS_DIR / "despesas_enriquecidas.csv"
 OUTPUT_AGREGADO = OPERADORAS_DIR / "despesas_agregadas.csv"
 
-ZIP_OUTPUT = Path("operadoras.zip")
+ZIP_OUTPUT = Path("Teste_Luiz_Fernando_Policarpo_leandro.zip")
 
 
 def zip_dir(source_dir: Path, output_zip: Path):

@@ -185,11 +185,11 @@ A explicação detalhada da implementação da **Das partes do projeto** — inc
 
 ## Considerações técnicas
 
-* Uso de `ThreadPoolExecutor` para tarefas de rede (download)
-* Uso de `ProcessPoolExecutor` para processamento de arquivos
-* Identificação automática de colunas por heurística
-* Uso de tipos `Int64` (nullable) do pandas para evitar falhas com dados ausentes
-* Código tolerante a múltiplos layouts e inconsistências de origem
+* ThreadPoolExecutor para tarefas I/O bound (downloads)
+* ProcessPoolExecutor para processamento pesado
+* Detecção automática de layout e colunas
+* Uso de tipos Int64 (nullable) do pandas
+* Código tolerante a inconsistências da origem
 
 ---
 
@@ -200,6 +200,10 @@ A explicação detalhada da implementação da **Das partes do projeto** — inc
 Este projeto tem finalidade **educacional e técnica**, demonstrando capacidade de:
 
 * Resolver problemas práticos com dados reais
+* Engenharia de dados aplicada, Código modular, limpo e documentado
+* Automação de pipelines, Código modular, limpo e documentado
 * Tomar decisões técnicas fundamentadas
 * Documentar escolhas e trade-offs
 * Produzir código organizado, legível e resiliente
+
+
