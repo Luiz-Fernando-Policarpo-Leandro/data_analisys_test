@@ -10,6 +10,13 @@ O projeto foi desenvolvido como solução para um desafio técnico de integraç�
 
 ⚠️ **Observação**: Este repositório utiliza exclusivamente **dados públicos**. Nenhuma informação sensível, privada ou confidencial é armazenada ou exposta.
 
+## documentação
+Aqui está documentado com mais detalhes todas as partes do projeto
+➡️ **Consulte:** [1. TESTE DE INTEGRAÇÃO COM API PÚBLICA](docs/PARTE_1.md)
+➡️ **Consulte:** [2. TESTE DE TRANSFORMAÇÃO E VALIDAÇÃO DE DADOS](docs/PARTE_2.md)
+➡️ **Consulte:** [3. TESTE DE BANCO DE DADOS E ANÁLISE](docs/PARTE_3.md)
+➡️ **Consulte:** [4.1 BACKEND](backend/app/README.md)
+
 ## Visão Geral da Solução
 
 A aplicação automatiza as seguintes etapas:
@@ -163,7 +170,14 @@ Para detalhes completos sobre a modelagem, DDL, staging e queries analíticas, c
    \i sql/run_all.sql
    ```
 
-   > No Neon.tech, substitua COPY por \copy para importar CSVs do cliente local.
+7. Subir server backend
+
+   ```bash
+      # volte para raiz do projeto
+      cd backend
+      uvicorn app.main:app --reload
+
+   ```
 
 ## Arquivos Gerados
 
