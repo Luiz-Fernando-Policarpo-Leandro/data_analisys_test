@@ -13,6 +13,7 @@ from utils.file_utils import (
 )
 from utils.dataframe_utils import load_table, normalize_and_parse, separar_consolidados
 
+
 FILES_PATH = Path("data/despesas")
 INVAL_PATH = FILES_PATH / "invalidos"
 VAL_PATH = FILES_PATH / "valido"

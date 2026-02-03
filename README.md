@@ -1,20 +1,22 @@
 # Integração e Consolidação de Dados Públicos da ANS
 
-Este repositório contém uma aplicação em **Python** que implementa um pipeline completo de **integração, processamento, normalização, validação e consolidação** de dados públicos disponibilizados pela **ANS (Agência Nacional de Saúde Suplementar)**.
+Este repositório contém uma aplicação em Python que implementa um **pipeline completo** de integração, processamento, normalização, validação e consolidação de dados públicos disponibilizados pela **ANS (Agência Nacional de Saúde Suplementar)**.
 
-O projeto foi desenvolvido como uma solução prática para um desafio técnico de integração com API pública, com foco em **resiliência a dados inconsistentes**, **decisões técnicas justificáveis** e **organização clara do código**.
+O projeto foi desenvolvido como solução para um desafio técnico de integração com API pública, com foco em:
 
-> ⚠️ **Observação**: Este repositório utiliza **exclusivamente dados públicos**. Nenhuma informação sensível, privada ou confidencial é armazenada ou exposta.
+* Resiliência a dados inconsistentes
+* Decisões técnicas justificáveis
+* Organização clara e modular do código
 
----
+⚠️ **Observação**: Este repositório utiliza exclusivamente **dados públicos**. Nenhuma informação sensível, privada ou confidencial é armazenada ou exposta.
 
-## Visão geral da solução
+## Visão Geral da Solução
 
 A aplicação automatiza as seguintes etapas:
 
 1. Acesso ao repositório público de dados da ANS (via HTTP/FTP)
-2. Identificação automática de arquivos de **Demonstrações Contábeis** organizados por ano e trimestre
-3. Seleção dos **últimos 3 trimestres disponíveis de cada ano**
+2. Identificação automática de arquivos de Demonstrações Contábeis organizados por ano e trimestre
+3. Seleção dos **últimos 3 trimestres disponíveis** de cada ano
 4. Download paralelo dos arquivos compactados (ZIP)
 5. Extração automática dos arquivos internos
 6. Leitura de múltiplos formatos (CSV, TXT, XLS, XLSX)
@@ -22,188 +24,191 @@ A aplicação automatiza as seguintes etapas:
 8. Tratamento de datas e identificação de ano/trimestre mesmo em layouts inconsistentes
 9. Consolidação dos dados em um único CSV
 10. Validação e classificação dos registros conforme regras de negócio
-11. Geração de múltiplos arquivos finais e compactação do consolidado
+11. Enriquecimento com dados cadastrais de operadoras
+12. Agregação por operadora e UF
+13. Criação de tabelas normalizadas e carregamento em **PostgreSQL**
+14. Geração de arquivos derivados e compactação
 
-A aplicação é **idempotente**: caso o arquivo consolidado já exista, o pipeline reutiliza o resultado sem refazer downloads ou processamento.
+A aplicação é **idempotente**: caso os arquivos finais já existam, o pipeline reutiliza os resultados sem refazer downloads ou processamento.
 
----
-
-## Estrutura do projeto
+## Estrutura do Projeto
 
 ```
 app/
-├─ data/                     # Dados processados e resultados finais
-│  ├─ despesas/              # Dados de despesas consolidados
-│  │  ├─ valido/             # Registros válidos após validação
-│  │  ├─ invalidos/          # Registros inválidos segregados por regra
+├─ data/
+│  ├─ csv/                   # CSVs brutos
+│  ├─ despesas/
+│  │  ├─ valido/
+│  │  ├─ invalidos/
 │  │  └─ consolidado_despesas.csv
 │  │
-│  └─ operadoras/            # Dados enriquecidos com cadastro ANS
+│  └─ operadoras/
 │     ├─ Relatorio_cadop.csv
 │     ├─ despesas_enriquecidas.csv
 │     └─ despesas_agregadas.csv
 │
-├─ docs/                     # Documentação técnica
-│  ├─ PARTE_1.md             # Coleta, normalização e consolidação
-│  └─ PARTE_2.md             # Validação, enriquecimento e agregação
+├─ docs/
+│  ├─ PARTE_1.md
+│  ├─ PARTE_2.md
+│  └─ PARTE_3.md             # Pipeline de banco de dados, normalização e queries analíticas
 │
-├─ scripts/                  # Scripts executáveis
-│  ├─ run_integration.py     # Pipeline da Parte 1
-│  └─ run_aggregate.py       # Pipeline da Parte 2
+├─ scripts/
+│  ├─ run_integration.py     # Coleta e consolidação
+│  └─ run_aggregate.py       # Validação, enriquecimento e agregação
 │
-├─ utils/                    # Funções reutilizáveis
-│  ├─ file_utils.py          # Download, leitura e extração de arquivos
-│  ├─ cnpj_utils.py          # Normalização e validação de CNPJ
-│  ├─ enrich_utils.py        # Enriquecimento com dados cadastrais
-│  ├─ aggregate_utils.py     # Agregações estatísticas
-│  └─ dataframe_utils.py     # Utilitários genéricos de DataFrame
+├─ utils/
+│  ├─ file_utils.py
+│  ├─ cnpj_utils.py
+│  ├─ enrich_utils.py
+│  ├─ aggregate_utils.py
+│  └─ dataframe_utils.py
 │
-├─ consolidado_despesas.zip  # Entrega Parte 1
-├─ operadoras.zip            # Entrega Parte 2
+├─ docker/
+│  └─ postgres/
+│     └─ docker-compose.yml
+│
+├─ sql/
+│  ├─ ddl/                   # Criação das tabelas
+│  │  └─ 01_create_tables.sql
+│  ├─ staging/               # Staging para importação segura
+│  │  ├─ 02_create_staging.sql
+│  │  └─ 03_load_csv.sql
+│  ├─ transforms/            # Normalização
+│  │  ├─ 04_normalize_operadora.sql
+│  │  └─ 05_normalize_despesa.sql
+│  ├─ validations/           # Validações
+│  │  └─ 06_validation_queries.sql
+│  └─ analytics/             # Queries analíticas
+│     └─ 07_analytics.sql
+│
+├─ consolidado_despesas.zip
+├─ operadoras.zip
 ├─ requirements.txt
 └─ README.md
-
 ```
 
----
+## Banco de Dados
+
+O projeto utiliza **PostgreSQL 16** como banco de dados principal.
+A modelagem é **normalizada**, garantindo integridade, rastreabilidade e boa performance para queries analíticas.
+
+### Estrutura principal
+
+* `operadora` → dimensões das operadoras
+* `despesa` → fatos financeiros atômicos (despesas por trimestre)
+* `despesa_agregada` → agregados de performance / relatórios
+
+### Observações técnicas
+
+* Tipos de dados escolhidos para precisão monetária (`DECIMAL`) e consistência temporal (`SMALLINT`, `TINYINT`, `DATE`)
+* Tabelas **staging** para importação segura de CSVs antes da normalização
+* Índices estratégicos para joins e filtros frequentes
+* Pipeline de carregamento em duas versões:
+
+  * Docker local para desenvolvimento (`docker compose up`)
+  * Neon.tech (PostgreSQL serverless) para demonstração e produção
+
+Para detalhes completos sobre a modelagem, DDL, staging e queries analíticas, consulte:
+➡️ **PARTE 3 — Banco de dados e análise**
 
 ## Requisitos
 
-* Python **3.10 ou superior**
+* Python 3.10 ou superior
 * pip
+* Docker (para ambiente local)
 * Acesso à internet
 * Sistema operacional Linux, macOS ou Windows
 
----
+## Instalação e Execução
 
-## Instalação
+1. Clonar o repositório
 
-### 1. Clonar o repositório
+   ```bash
+   git clone https://github.com/Luiz-Fernando-Policarpo-Leandro/data_analisys_test
+   cd app
+   ```
 
-```bash
-git clone <https://github.com/Luiz-Fernando-Policarpo-Leandro/data_analisys_test>
-cd app
-```
+2. Criar e ativar ambiente virtual
 
-### 2. Criar ambiente virtual (venv)
+   ```bash
+   python3 -m venv venv  # Linux / macOS
+   source venv/bin/activate
 
-```bash
-python3 -m venv venv
-```
+   # Windows
+   venv\Scripts\activate
+   ```
 
-### 3. Ativar o ambiente virtual
+3. Instalar dependências
 
-Linux / macOS:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-```bash
-source venv/bin/activate
-```
+4. Subir PostgreSQL via Docker (opcional – local)
 
-Windows:
+   ```bash
+   cd docker/postgres
+   docker compose up -d
+   ```
 
-```bash
-venv\\Scripts\\activate
-```
+5. Executar o pipeline
 
-### 4. Instalar dependências
+   ```bash
+   python main.py
+   ```
 
-```bash
-pip install -r requirements.txt
-```
+6. Carregar e processar no PostgreSQL
 
----
+   ```sql
+   \i sql/run_all.sql
+   ```
 
-## Como executar
+   > No Neon.tech, substitua COPY por \copy para importar CSVs do cliente local.
 
-Com o ambiente virtual ativo:
+## Arquivos Gerados
 
-```bash
-python main.py
-```
+* Despesas consolidadas: `data/despesas/consolidado_despesas.csv`
 
-Durante a execução, o programa:
+* Despesas válidas: `data/despesas/valido/consolidado_validos.csv`
 
-* Lista os arquivos identificados por ano e trimestre
-* Realiza downloads paralelos (I/O bound)
-* Processa os arquivos em paralelo (CPU bound)
-* Normaliza estruturas diferentes automaticamente
-* Gera os arquivos finais na pasta `/data`
+* Despesas inválidas: `data/despesas/invalidos/` (CNPJ inválido, valor zero, valor negativo)
 
----
+* Operadoras:
 
-## Arquivos gerados
+  * `data/operadoras/Relatorio_cadop.csv`
+  * `data/operadoras/despesas_enriquecidas.csv`
+  * `data/operadoras/despesas_agregadas.csv`
 
-### Arquivo consolidado
+* Compactados:
 
-* `consolidado_despesas.csv`
+  * `consolidado_despesas.zip`
+  * `operadoras.zip`
 
-### Arquivos derivados por validação
+## Regras de Validação Aplicadas
 
-**Válidos**
+* CNPJ válido (formato e dígitos verificadores)
+* Valores positivos → válidos
+* Valores negativos → classificados separadamente
+* Valores zero → classificados separadamente
+* CNPJs sem cadastro → separados
 
-* `valido/consolidado_validos.csv`
+Essas decisões garantem rastreabilidade, auditabilidade e consistência para análises posteriores.
 
-**Inválidos**
+## Considerações Técnicas
 
-* `invalidos/consolidado_numero_negativo_invalido.csv`
-* `invalidos/consolidado_valor_zero.csv`
-* `invalidos/consolidado_cnpj_invalido.csv`
+* Pipeline idempotente
+* `ThreadPoolExecutor` para downloads (I/O bound)
+* `ProcessPoolExecutor` para processamento pesado (CPU bound)
+* Tratamento automático de múltiplos formatos e layouts inconsistentes
+* Uso de staging para validação e normalização antes do carregamento final
+* Docker e Neon.tech garantem portabilidade e reprodutibilidade
 
-**Operadoras**
-* `despesas_agregadas.csv`
-* `despesas_enriquecidas.csv`
-* `Relatorio_cadop.csv`
+## Finalidade do Projeto
 
-### Compactados
-
-* `consolidado_despesas.zip`
-* `operadoras.zip`
-
----
-
-## Regras de validação aplicadas
-
-* **CNPJ válido**: validação de formato e dígitos verificadores
-* **Valores positivos**: considerados válidos
-* **Valores negativos**: classificados separadamente
-* **Valores zero**: classificados separadamente
-* **CNPJ inválido**: separado independentemente do valor
-
-Essas decisões foram tomadas para preservar **rastreabilidade**, **auditabilidade** e **análise posterior de inconsistências**.
-
----
-
-## Detalhamento técnico
-
-A explicação detalhada da implementação da **Das partes do projeto** — incluindo decisões técnicas, trade-offs, estratégia de parsing, paralelismo e normalização — está documentada separadamente.
-
-➡️ **Consulte:** [1. TESTE DE INTEGRAÇÃO COM API PÚBLICA](docs/PARTE_1.md)
-
-➡️ **Consulte:** [2. TESTE DE TRANSFORMAÇÃO E VALIDAÇÃO DE DADOS](docs/PARTE_2.md)
-
----
-
-## Considerações técnicas
-
-* ThreadPoolExecutor para tarefas I/O bound (downloads)
-* ProcessPoolExecutor para processamento pesado
-* Detecção automática de layout e colunas
-* Uso de tipos Int64 (nullable) do pandas
-* Código tolerante a inconsistências da origem
-
----
-
-
-
-## Finalidade
-
-Este projeto tem finalidade **educacional e técnica**, demonstrando capacidade de:
+O projeto demonstra capacidade de:
 
 * Resolver problemas práticos com dados reais
-* Engenharia de dados aplicada, Código modular, limpo e documentado
-* Automação de pipelines, Código modular, limpo e documentado
-* Tomar decisões técnicas fundamentadas
-* Documentar escolhas e trade-offs
-* Produzir código organizado, legível e resiliente
-
-
+* Implementar engenharia de dados robusta
+* Produzir código modular, limpo e bem documentado
+* Tomar decisões técnicas fundamentadas e justificar trade-offs
+* Criar pipelines reprodutíveis e escaláveis
