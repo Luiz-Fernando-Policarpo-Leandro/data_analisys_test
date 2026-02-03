@@ -14,9 +14,13 @@ O projeto foi desenvolvido como solução para um desafio técnico de integraç�
 Aqui está documentado com mais detalhes todas as partes do projeto
 
 ➡️ **Consulte:** [1. TESTE DE INTEGRAÇÃO COM API PÚBLICA](docs/PARTE_1.md)
+
 ➡️ **Consulte:** [2. TESTE DE TRANSFORMAÇÃO E VALIDAÇÃO DE DADOS](docs/PARTE_2.md)
+
 ➡️ **Consulte:** [3. TESTE DE BANCO DE DADOS E ANÁLISE](docs/PARTE_3.md)
+
 ➡️ **Consulte:** [4.1 TESTE DE API E INTERFACE WEB - BACKEND](backend/app/README.md)
+
 ➡️ **Consulte:** [4.2 TESTE DE API E INTERFACE WEB - FRONTEND](frontend/README.md)
 
 ## Visão Geral da Solução
