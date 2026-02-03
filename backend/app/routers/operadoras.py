@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, Query, HTTPException
 from typing import Optional, List
+import re
 
 from app.core.database import get_connection
 from app.utils.cnpj import normalize_cnpj
@@ -21,11 +22,13 @@ def listar_operadoras(
     params = []
 
     if q:
-        q_norm = normalize_cnpj(q)
-        if len(q_norm) == 14:
-            where = "WHERE cnpj = %s"
-            params.append(q_norm)
+        # Normaliza removendo qualquer caractere que não seja número
+        q_norm = re.sub(r"\D", "", q)
+        if q_norm:  # se tiver algum número, busca no CNPJ
+            where = "WHERE cnpj LIKE %s"
+            params.append(f"%{q_norm}%")
         else:
+            # Caso não seja número, busca na razão social
             where = "WHERE razao_social ILIKE %s"
             params.append(f"%{q}%")
 
