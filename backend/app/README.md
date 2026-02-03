@@ -118,9 +118,46 @@ Justificativa:
 - Simplicidade para o frontend
 - Fácil compreensão para avaliação técnica
 
-### GET /api/operadoras/{cnpj}
+# GET /api/operadoras/{cnpj}
+**Descrição:**
+Retorna os dados cadastrais de uma operadora específica diretamente do banco, normalizando o CNPJ para garantir consistência. Útil para detalhar uma operadora antes de exibir histórico de despesas ou métricas agregadas.
+## Parâmetros de Caminho
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|------------|-----------|
+| cnpj | string | Sim | CNPJ da operadora. Pode conter pontos, barras ou hífens; será normalizado automaticamente (apenas números). |
 
-Retorna os dados cadastrais normalizados diretamente do banco.
+## Exemplo de Request
+```
+GET /api/operadoras/27.123.456/0001-89
+```
+## Exemplo de Response 200 OK
+```json
+{
+  "id_operadora": 123,
+  "registro_ans": 27,
+  "cnpj": "27123456000189",
+  "razao_social": "Operadora Exemplo S/A",
+  "nome_fantasia": "Exemplo Saúde",
+  "modalidade": "Seguros",
+  "uf": "SP",
+  "data_registro_ans": "2011-01-01"
+}
+```
+## Códigos de Resposta
+| Código | Significado | Condição |
+|--------|------------|---------|
+| 200 | OK | Operadora encontrada e dados retornados. |
+| 404 | Not Found | Nenhuma operadora com o CNPJ informado. |
+
+## Detalhes Técnicos
+- Normalização do CNPJ: Todos os caracteres não numéricos são removidos antes da consulta (normalize_cnpj).
+- Consulta SQL: Busca pelo CNPJ exato na tabela operadora.
+- Tratamento de Erro: Se fetchone() retornar None, a rota dispara HTTPException(404).
+
+## Observações
+- Esta rota é essencial para integrar o frontend ao histórico de despesas e às estatísticas.
+- Não faz paginação nem filtros: é busca única e direta por CNPJ.
+- Ideal para uso em links clicáveis nas tabelas ou gráficos.
 
 ### GET /api/operadoras/{cnpj}/despesas
 
