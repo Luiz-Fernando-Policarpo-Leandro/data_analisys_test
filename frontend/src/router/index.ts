@@ -7,7 +7,12 @@ import Estatisticas from '../views/Estatisticas.vue'
 
 const routes: RouteRecordRaw[] = [
   { path: '/', component: OperadorasList },
-  { path: '/operadoras/:cnpj', component: OperadoraDetalhe, props: true },
+  { 
+    path: '/operadoras/:cnpj', 
+    name: 'operadora-detalhe', // Nome adicionado
+    component: OperadoraDetalhe, 
+    props: true 
+  },
   { path: '/estatisticas', component: Estatisticas }
 ]
 

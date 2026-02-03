@@ -206,35 +206,10 @@ def zip_dir(source_dir: Path, output_zip: Path):
                     arcname=file.relative_to(source_dir)
                 )
 
-def rename_csv_columns(file_path: str, rename_map: dict, output_path: str = None):
+def rename_csv_columns(df: pd.DataFrame, columns_map: dict) -> pd.DataFrame:
     """
-    Renomeia colunas de um CSV de acordo com o dicionário rename_map.
-
-    Args:
-        file_path (str): caminho do CSV original
-        rename_map (dict): mapeamento {coluna_csv: coluna_desejada}
-        output_path (str, optional): caminho do CSV renomeado. 
-                                     Se None, sobrescreve o arquivo original.
-
-    Returns:
-        str: caminho do CSV renomeado
+    Renomeia colunas do DataFrame de acordo com columns_map.
+    df: DataFrame original
+    columns_map: dicionário {nome_antigo: nome_novo}
     """
-    file_path = Path(file_path)
-    if output_path is None:
-        output_path = file_path
-
-    # Detecta delimitador automaticamente (; ou ,)
-    with open(file_path, 'r', encoding='utf-8') as f:
-        first_line = f.readline()
-        delimiter = ';' if ';' in first_line else ','
-
-    # Lê o CSV
-    df = pd.read_csv(file_path, delimiter=delimiter, dtype=str)
-
-    # Renomeia as colunas
-    df.rename(columns=rename_map, inplace=True)
-
-    # Salva o CSV
-    df.to_csv(output_path, sep=delimiter, index=False, encoding='utf-8')
-
-    return str(output_path)
+    return df.rename(columns=columns_map)

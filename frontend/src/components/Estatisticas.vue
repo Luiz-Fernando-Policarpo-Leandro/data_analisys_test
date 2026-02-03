@@ -7,8 +7,8 @@
     <h2>Top 5 Operadoras</h2>
     <ul>
       <li v-for="op in estatisticas.top_5_operadoras" :key="op.id_operadora">
-        <router-link :to="`/operadoras/${op.cnpj}`">
-          {{ op.razao_social }} — {{ op.total_despesas.toLocaleString() }}
+        <router-link :to="{ name: 'operadora-detalhe', params: { cnpj: op.cnpj.replace(/\D/g, '') }}">
+          <strong>{{ op.razao_social }}</strong> — R$ {{ op.total_despesas.toLocaleString('pt-BR') }}
         </router-link>
       </li>
     </ul>

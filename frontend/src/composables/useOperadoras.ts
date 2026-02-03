@@ -2,10 +2,13 @@ import { ref } from 'vue'
 import { api } from '../api/http'
 
 interface Operadora {
+  id_operadora: number
   cnpj: string
   razao_social: string
   uf: string
-  // ... outros campos
+  nome_fantasia?: string
+  registro_ans?: string
+  modalidade?: string
 }
 
 interface ApiResponse {
@@ -21,6 +24,7 @@ export function useOperadoras() {
   const page = ref(1)
   const limit = 20
   const q = ref('')
+  const includeSemDespesas = ref(false)
 
   async function fetchOperadoras(reset = false) {
     if (loading.value) return
@@ -34,6 +38,7 @@ export function useOperadoras() {
           page: page.value,
           limit,
           q: q.value || undefined,
+          include_sem_despesas: includeSemDespesas.value,
         },
       })
 
@@ -55,7 +60,7 @@ export function useOperadoras() {
   function resetBusca(newQuery: string) {
     q.value = newQuery.trim()
     page.value = 1
-    operadoras.value = []          // limpa visualmente mais rápido
+    operadoras.value = [] // limpa visualmente mais rápido
     fetchOperadoras(true)
   }
 
@@ -75,5 +80,6 @@ export function useOperadoras() {
     page,
     loadMore,
     resetBusca,
+    includeSemDespesas,
   }
 }

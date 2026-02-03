@@ -12,7 +12,7 @@ def main():
         run_aggregate()
 
         print("[STEP 3] Formatando CSVs...")
-        run_format_csv()
+        # run_format_csv()
 
         print("[OK] Pipeline completo executado com sucesso.")
 

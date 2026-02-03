@@ -10,12 +10,14 @@ O projeto foi desenvolvido como solução para um desafio técnico de integraç�
 
 ⚠️ **Observação**: Este repositório utiliza exclusivamente **dados públicos**. Nenhuma informação sensível, privada ou confidencial é armazenada ou exposta.
 
-## documentação
+# !!documentação!!
 Aqui está documentado com mais detalhes todas as partes do projeto
+
 ➡️ **Consulte:** [1. TESTE DE INTEGRAÇÃO COM API PÚBLICA](docs/PARTE_1.md)
 ➡️ **Consulte:** [2. TESTE DE TRANSFORMAÇÃO E VALIDAÇÃO DE DADOS](docs/PARTE_2.md)
 ➡️ **Consulte:** [3. TESTE DE BANCO DE DADOS E ANÁLISE](docs/PARTE_3.md)
-➡️ **Consulte:** [4.1 BACKEND](backend/app/README.md)
+➡️ **Consulte:** [4.1 TESTE DE API E INTERFACE WEB - BACKEND](backend/app/README.md)
+➡️ **Consulte:** [4.2 TESTE DE API E INTERFACE WEB - FRONTEND](frontend/README.md)
 
 ## Visão Geral da Solução
 
@@ -42,64 +44,40 @@ A aplicação é **idempotente**: caso os arquivos finais já existam, o pipelin
 
 ```
 app/
-├─ data/
-│  ├─ csv/                   # CSVs brutos
-│  ├─ despesas/
-│  │  ├─ valido/
-│  │  ├─ invalidos/
-│  │  └─ consolidado_despesas.csv
-│  │
-│  └─ operadoras/
-│     ├─ Relatorio_cadop.csv
-│     ├─ despesas_enriquecidas.csv
-│     └─ despesas_agregadas.csv
-│
-├─ docs/
-│  ├─ PARTE_1.md
-│  ├─ PARTE_2.md
-│  └─ PARTE_3.md             # Pipeline de banco de dados, normalização e queries analíticas
-│
-├─ scripts/
-│  ├─ run_integration.py     # Coleta e consolidação
-│  └─ run_aggregate.py       # Validação, enriquecimento e agregação
-│
-├─ utils/
-│  ├─ file_utils.py
-│  ├─ cnpj_utils.py
-│  ├─ enrich_utils.py
-│  ├─ aggregate_utils.py
-│  └─ dataframe_utils.py
-│
-├─ docker/
-│  └─ postgres/
-│     └─ docker-compose.yml
-│
-├─ sql/
-│  ├─ ddl/                   # Criação das tabelas
-│  │  └─ 01_create_tables.sql
-│  ├─ staging/               # Staging para importação segura
-│  │  ├─ 02_create_staging.sql
-│  │  └─ 03_load_csv.sql
-│  ├─ transforms/            # Normalização
-│  │  ├─ 04_normalize_operadora.sql
-│  │  └─ 05_normalize_despesa.sql
-│  ├─ validations/           # Validações
-│  │  └─ 06_validation_queries.sql
-│  └─ analytics/             # Queries analíticas
-│     └─ 07_analytics.sql
-│
-├─ consolidado_despesas.zip
-├─ operadoras.zip
-├─ requirements.txt
-└─ README.md
+├── backend/
+│   └── app/
+│       ├── core/           # Configurações e Conexão com Banco
+│       ├── models/         # Definição de Schemas (Pydantic)
+│       ├── routers/        # Endpoints da API (Operadoras e Estatísticas)
+│       ├── utils/          # Validadores (CNPJ)
+│       └── main.py         # Arquivo de entrada do FastAPI
+├── data/
+│   ├── despesas/           # Fluxo de CSVs de despesas (Validados/Inválidos)
+│   └── operadoras/         # CSVs de referência e saídas do pipeline
+├── docker/
+│   └── postgres/
+│       └── docker-compose.yml
+├── docs/                   # Documentação das Partes 1, 2 e 3 do desafio
+├── frontend/
+│   ├── src/
+│   │   ├── api/            # Configuração Axios
+│   │   ├── components/     # Componentes Vue (Gráficos/Tabelas)
+│   │   ├── views/          # Páginas da aplicação
+│   │   └── main.ts
+│   ├── package.json
+│   └── vite.config.ts
+├── scripts/                # Scripts Python de ETL e Processamento
+├── sql/                    # Scripts SQL organizados por etapas (DDL a Analytics)
+├── requirements.txt
+└── README.md
 ```
 
 ## Banco de Dados
 
-O projeto utiliza **PostgreSQL 16** como banco de dados principal.
+O projeto utiliza **PostgreSQL 16**, com docker-compose, como banco de dados principal.
 A modelagem é **normalizada**, garantindo integridade, rastreabilidade e boa performance para queries analíticas.
 
-### Estrutura principal
+### Estrutura principal dos arquvios csv
 
 * `operadora` → dimensões das operadoras
 * `despesa` → fatos financeiros atômicos (despesas por trimestre)
@@ -123,10 +101,13 @@ Para detalhes completos sobre a modelagem, DDL, staging e queries analíticas, c
 * Python 3.10 ou superior
 * pip
 * Docker (para ambiente local)
-* Acesso à internet
+* API FLASK
+* Frontend Vue, Typescript
 * Sistema operacional Linux, macOS ou Windows
 
 ## Instalação e Execução
+Para prosseguir, crie dois terminais e cole os comandos
+## Terminal 1
 
 1. Clonar o repositório
 
@@ -148,35 +129,49 @@ Para detalhes completos sobre a modelagem, DDL, staging e queries analíticas, c
 3. Instalar dependências
 
    ```bash
-   pip install -r requirements.txt
+      pip install -r requirements.txt
    ```
 
-4. Subir PostgreSQL via Docker (opcional – local)
+4. Executar o pipeline
 
    ```bash
-   cd docker/postgres
-   docker compose up -d
+      python main.py
    ```
 
-5. Executar o pipeline
+
+5. Subir PostgreSQL via Docker, Carregar e processar no PostgreSQL
 
    ```bash
-   python main.py
+      cd docker/postgres
+      docker compose up -d
+      # carregar dados
+      docker exec -it ans_postgres psql -U ans_user -d ans_db -f /sql/run_all.sql
    ```
 
-6. Carregar e processar no PostgreSQL
+6. Voltar para o `/app`
+   ```bash
+         cd ../..
+   ``
 
-   ```sql
-   \i sql/run_all.sql
-   ```
 
-7. Subir server backend
+7. Subir Server Backend
 
    ```bash
-      # volte para raiz do projeto
+      # app/backend
       cd backend
       uvicorn app.main:app --reload
 
+   ```
+
+## Terminal 2
+
+8. Subir Server Frontend
+
+   ```bash
+      # /app
+      cd frontend
+      npm install
+      npm run dev
    ```
 
 ## Arquivos Gerados

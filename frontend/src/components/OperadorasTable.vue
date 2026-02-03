@@ -12,7 +12,7 @@
         <tr v-for="op in operadoras" :key="op.cnpj">
           <td>{{ op.cnpj }}</td>
           <td>
-            <router-link :to="`/operadoras/${op.cnpj}`">
+            <router-link :to="`/operadoras/${op.cnpj}`" target="_blank">
               {{ op.razao_social }}
             </router-link>
           </td>
@@ -31,8 +31,8 @@ defineProps<{
 
 <style scoped>
 .table-container {
-  /* NÃO coloque overflow-y aqui mais */
-  /* Deixe o scroll subir para o container pai */
+  overflow-x: auto;
+  margin-top: 1rem;
 }
 
 table {
@@ -54,12 +54,18 @@ thead th {
   z-index: 1;
 }
 
+/* Estilo para parecer um link de sistema profissional */
 a {
-  color: #0066cc;
+  color: #42b883;
   text-decoration: none;
+  font-weight: 500;
 }
 
 a:hover {
   text-decoration: underline;
+}
+
+tr:hover {
+  background-color: #f9f9f9;
 }
 </style>

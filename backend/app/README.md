@@ -1,26 +1,26 @@
 # API de Operadoras e Despesas – ANS
-
 ## Teste Técnico – Backend & Integração de Dados
 
-Este projeto implementa um pipeline completo de dados (ETL + banco relacional + API REST) utilizando dados públicos da ANS (Agência Nacional de Saúde Suplementar), conforme solicitado no teste técnico.
+Este projeto implementa um pipeline completo de dados (ETL + banco relacional + API REST) utilizando dados públicos da ANS.
 
-O escopo deste documento foca exclusivamente no BACKEND, atendendo explicitamente aos requisitos do item 4 do desafio.
-
----
-
-## Mapeamento com o Enunciado do Teste
-
-| Item do Teste | Atendido | Onde |
-|--------------|----------|------|
+## Mapeamento do Teste
+| Item | Atendido | Onde |
+|---|---|---|
 | 4.1 Uso de dados do banco | Sim | PostgreSQL (ETL completo) |
 | 4.2 API em Python | Sim | FastAPI |
-| 4.2.1 Escolha do framework | Sim | Seção Backend |
 | 4.2.2 Estratégia de paginação | Sim | GET /api/operadoras |
 | 4.2.3 Cache vs cálculo | Sim | Estatísticas pré-calculadas |
-| 4.2.4 Estrutura da resposta | Sim | Dados + metadados |
-| 4.4 Documentação da API | Sim | README + OpenAPI |
+| 4.4 Documentação da API | Sim | README |
+
 
 ---
+
+## Configuração Local
+```bash
+cd backend
+uvicorn app.main:app --reload
+```
+
 
 ## Arquitetura Geral do Projeto
 
@@ -78,7 +78,6 @@ Justificativa da escolha:
 
 - Performance superior (ASGI)
 - Tipagem explícita com Pydantic
-- Documentação automática (Swagger/OpenAPI)
 - Melhor manutenção para APIs orientadas a dados
 
 FastAPI foi escolhido por oferecer clareza de contrato, robustez e escalabilidade, mesmo em um projeto de escopo médio.
@@ -257,7 +256,7 @@ docker-compose up -d
 
 ## Documentação da API
 
-- Todas as rotas documentadas via OpenAPI
+- Todas as rotas documentadas
 - Swagger disponível em /docs
 - Coleção Postman exportável
 
