@@ -4,6 +4,7 @@ Esta seção do projeto compreende a interface web desenvolvida para interagir c
 
 ## Estrutura de Arquivos
 
+```
 frontend/
 ├── src/
 │ ├── api/
@@ -23,7 +24,7 @@ frontend/
 │ └── main.ts # Inicialização do Vue
 ├── package.json # Dependências (Vue 3, Vite, Axios)
 └── README.md # Documentação específica do frontend
-
+```
 
 ## Justificativas Técnicas (Trade-offs)
 
