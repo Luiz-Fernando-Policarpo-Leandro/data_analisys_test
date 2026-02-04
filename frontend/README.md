@@ -17,7 +17,7 @@ frontend/
 │ ├── views/
 │ │ ├── OperadorasList.vue # Página principal com busca e paginação
 │ │ ├── OperadoraDetalhe.vue# Detalhes e métricas (abre em nova aba)
-│ │ └── Estatisticas.vue # Dashboard global e Top 5 operadoras
+│ │ └── Estatisticas.vue # Dashboard global e Top 5 operadoras e destribuição de despesas por UF
 │ ├── router/
 │ │ └── index.ts # Configuração das rotas (Vue Router)
 │ ├── App.vue # Componente raiz
