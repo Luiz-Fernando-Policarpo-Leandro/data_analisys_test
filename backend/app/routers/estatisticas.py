@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.core.database import get_connection
 from app.utils.cnpj import normalize_cnpj
-from app.models.schemas import EstatisticasGlobais, EstatisticaOperadora, TopOperadora
+from app.models.schemas import EstatisticasGlobais, EstatisticaOperadora, TopOperadora, DespesaPorUF
 
 router = APIRouter(prefix="/api/estatisticas", tags=["Estatísticas"])
 
@@ -9,6 +9,7 @@ router = APIRouter(prefix="/api/estatisticas", tags=["Estatísticas"])
 def estatisticas_globais(conn=Depends(get_connection)):
     cur = conn.cursor()
 
+    # 1. Busca Total e Média Geral
     cur.execute("""
         SELECT COALESCE(SUM(total_despesas),0),
                COALESCE(AVG(media_trimestral),0)
@@ -16,6 +17,7 @@ def estatisticas_globais(conn=Depends(get_connection)):
     """)
     total, media = cur.fetchone()
 
+    # 2. Busca as Top 5 Operadoras
     cur.execute("""
         SELECT o.id_operadora, o.cnpj, o.razao_social,
                SUM(da.total_despesas)
@@ -35,12 +37,27 @@ def estatisticas_globais(conn=Depends(get_connection)):
         ) for r in cur.fetchall()
     ]
 
+    # 3. NOVA QUERY: Distribuição de Despesas por UF (Para o Gráfico)
+    cur.execute("""
+        SELECT o.uf, SUM(da.total_despesas)
+        FROM despesa_agregada da
+        JOIN operadora o ON o.id_operadora = da.id_operadora
+        GROUP BY o.uf
+        ORDER BY SUM(da.total_despesas) DESC
+    """)
+    
+    distribuicao_uf = [
+        DespesaPorUF(uf=r[0], total=float(r[1])) 
+        for r in cur.fetchall()
+    ]
+
     cur.close()
 
     return EstatisticasGlobais(
         total_despesas=float(total),
         media_despesas=float(media),
-        top_5_operadoras=top_5
+        top_5_operadoras=top_5,
+        despesas_por_uf=distribuicao_uf  # Campo adicionado ao retorno
     )
 
 @router.get("/{cnpj}", response_model=EstatisticaOperadora)
@@ -73,3 +90,4 @@ def estatisticas_operadora(cnpj: str, conn=Depends(get_connection)):
         media_despesas=float(row[4]),
         desvio_padrao=float(row[5])
     )
+

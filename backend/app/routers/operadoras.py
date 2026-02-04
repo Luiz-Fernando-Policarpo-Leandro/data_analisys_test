@@ -128,3 +128,5 @@ def despesas_operadora(cnpj: str, conn=Depends(get_connection)):
     cur.close()
 
     return [Despesa(ano=r[0], trimestre=r[1], valor=float(r[2])) for r in rows]
+
+

@@ -155,7 +155,7 @@ Para prosseguir, crie dois terminais e cole os comandos
 6. Voltar para o `/app`
    ```bash
          cd ../..
-   ``
+   ```
 
 
 7. Subir Server Backend

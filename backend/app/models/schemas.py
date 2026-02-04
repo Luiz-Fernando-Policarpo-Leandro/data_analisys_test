@@ -45,3 +45,15 @@ class EstatisticaOperadora(BaseModel):
     total_despesas: float
     media_despesas: float
     desvio_padrao: float
+
+# app/models/schemas.py
+
+class DespesaPorUF(BaseModel):
+    uf: str
+    total: float
+
+class EstatisticasGlobais(BaseModel):
+    total_despesas: float
+    media_despesas: float
+    top_5_operadoras: List[TopOperadora]
+    despesas_por_uf: List[DespesaPorUF]
