@@ -180,6 +180,8 @@ Para prosseguir, crie dois terminais e cole os comandos
 
 ## Arquivos Gerados
 
+* arquivos zip: `Teste_Luiz_Fernando_Policarpo_leandro.zip` e `consolidado_despesas.zip` estão na raiz do projeto
+
 * Despesas consolidadas: `data/despesas/consolidado_despesas.csv`
 
 * Despesas válidas: `data/despesas/valido/consolidado_validos.csv`

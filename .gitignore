@@ -23,6 +23,9 @@ docs/files/
 *.csv
 *.zip
 
+!/consolidado_despesas.zip
+!/Teste_Luiz_Fernando_Policarpo_leandro.zip
+
 # =========================
 # Logs temporários
 # =========================
