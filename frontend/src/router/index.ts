@@ -9,7 +9,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/', component: OperadorasList },
   { 
     path: '/operadoras/:cnpj', 
-    name: 'operadora-detalhe', // Nome adicionado
+    name: 'operadora-detalhe',
     component: OperadoraDetalhe, 
     props: true 
   },
