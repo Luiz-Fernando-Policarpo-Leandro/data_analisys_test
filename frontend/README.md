@@ -28,22 +28,24 @@ frontend/
 
 ## Justificativas Técnicas (Trade-offs)
 
-### 1. Gerenciamento de Estado: Composables (Vue 3)
-
-- **Escolha:** Composables
-- **Justificativa:** Para uma aplicação de escopo focado, o uso de composables (`useOperadoras.ts`) oferece simplicidade e organização. Ele encapsula a lógica de busca e paginação de forma reativa, sem a complexidade de um store global como Vuex ou Pinia, que seria excessivo para este volume de dados.
-
-### 2. Estratégia de Busca e Filtro: Híbrida
+### 4.3.1 Estratégia de Busca e Filtro: Híbrida
 
 - **Escolha:** Híbrido
 - **Justificativa:** A busca inicial é realizada no servidor via query (`q`) para que a paginação funcione sobre todo o volume de dados. A interface mantém estados locais para melhorar a experiência do usuário, evitando recarregamentos desnecessários.
 
-### 3. Performance da Tabela: Scroll Infinito
+
+### 4.3.2 Gerenciamento de Estado: Composables (Vue 3)
+
+- **Escolha:** Composables
+- **Justificativa:** Para uma aplicação de escopo focado, o uso de composables (`useOperadoras.ts`) oferece simplicidade e organização. Ele encapsula a lógica de busca e paginação de forma reativa, sem a complexidade de um store global como Vuex ou Pinia, que seria excessivo para este volume de dados.
+
+
+### 4.3.3 Performance da Tabela: Scroll Infinito
 
 - **Escolha:** Implementação de scroll infinito acoplado à paginação por offset do backend.
 - **Justificativa:** A tabela carrega lotes de 20 operadoras conforme o usuário rola a página. Isso mantém o navegador rápido e responsivo, mesmo com milhares de registros.
 
-### 4. Tratamento de Erros e Loading
+### 4.3.4 Tratamento de Erros e Loading
 
 - **Escolha:** Estados de feedback visual específicos
 - **Justificativa:** Indicadores de loading para cada requisição assíncrona. Em caso de falha na API, o sistema exibe mensagens claras ao usuário, garantindo robustez.
