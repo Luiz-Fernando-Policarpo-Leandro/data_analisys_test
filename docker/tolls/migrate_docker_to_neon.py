@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import os
 import sys
 import subprocess
@@ -134,7 +133,10 @@ def main():
         backup_custom_dump(SRC_HOST, SRC_PORT, SRC_USER, SRC_DB, SRC_PASSWORD, dump_file)
 
         # 3) Testa conexão no Neon
-        run(["psql", NEON_URL, "-c", "SELECT 1;"], title="Testando conexão no Neon (psql)")
+        env = os.environ.copy()
+        env["PGCONNECT_TIMEOUT"] = "10"
+        run(["psql", NEON_URL, "-v", "ON_ERROR_STOP=1", "-c", "SELECT 1;"], env=env)
+
 
         # 4) Restaura no Neon
         restore_custom_dump(NEON_URL, dump_file)
