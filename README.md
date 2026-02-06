@@ -150,6 +150,8 @@ Para prosseguir, crie dois terminais e cole os comandos
       docker compose up -d
       # carregar dados
       docker exec -it ans_postgres psql -U ans_user -d ans_db -f /sql/run_all.sql
+      # backup para a nuvem
+      docker exec -t ans_postgres pg_dump -U ans_user -d ans_db -Fc   --no-owner --no-privileges   > ../backup/ans_db.dump
    ```
 
 6. Voltar para o `/app`
