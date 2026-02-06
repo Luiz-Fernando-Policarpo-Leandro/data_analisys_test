@@ -64,7 +64,7 @@ Esses metadados são armazenados junto com o arquivo antes do download.
 ## Seleção dos 3 últimos trimestres por ano
 
 Após listar todos os arquivos:
-
+0. Para fins de pegar os dados do ultimo trimestre do ano, utilizamos  o parametro`list_files_api(verbose=True)[-3:]
 1. Os arquivos são agrupados por ano
 2. Cada grupo é ordenado por trimestre
 3. Apenas os **3 últimos** são mantidos

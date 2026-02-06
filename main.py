@@ -1,6 +1,5 @@
 from scripts.run_integration import run as run_integrate
 from scripts.run_aggregate import run as run_aggregate
-from scripts.run_format_csv import run as run_format_csv
 
 
 def main():
@@ -10,9 +9,6 @@ def main():
 
         print("[STEP 2] Executando agregação...")
         run_aggregate()
-
-        print("[STEP 3] Formatando CSVs...")
-        # run_format_csv()
 
         print("[OK] Pipeline completo executado com sucesso.")
 
