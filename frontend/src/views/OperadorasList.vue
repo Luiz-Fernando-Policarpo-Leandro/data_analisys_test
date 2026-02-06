@@ -22,8 +22,22 @@
       </label>
     </div>
 
-    <p v-if="loading && page === 1">Carregando...</p>
-    <p v-if="error">{{ error }}</p>
+    <p v-if="loading && page === 1">
+      Carregando...
+      <br />
+      <small>
+        Conectando no servidor (Render). Na primeira vez pode demorar ~30s.
+      </small>
+    </p>
+
+    <p v-if="error">
+      {{ error }}
+      <br />
+      <small>
+        Se for a primeira tentativa, aguarde alguns segundos e tente novamente.
+      </small>
+    </p>
+
 
     <OperadorasTable :operadoras="operadoras" />
 
