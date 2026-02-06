@@ -13,8 +13,9 @@ __pycache__/
 # Virtual Environment
 # =========================
 venv/
-.env/
 .envrc
+.env*
+!.env.example
 
 # =========================
 # Pandas / Dados gerados
