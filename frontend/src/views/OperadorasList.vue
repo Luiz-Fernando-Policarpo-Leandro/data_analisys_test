@@ -5,12 +5,13 @@
     @scroll.passive="onScroll"
   >
     <h1>Operadoras</h1>
+
     <input
       v-model="q"
       placeholder="Buscar por razão social ou CNPJ"
       @input="buscar"
     />
-    
+
     <div class="filters">
       <label class="checkbox">
         <input
@@ -26,7 +27,7 @@
       Carregando...
       <br />
       <small>
-        Conectando no servidor (Render). Na primeira vez pode demorar ~30s.
+        Conectando no servidor (Render). Na primeira vez pode demorar {{ countdown }}s.
       </small>
     </p>
 
@@ -37,7 +38,6 @@
         Se for a primeira tentativa, aguarde alguns segundos e tente novamente.
       </small>
     </p>
-
 
     <OperadorasTable :operadoras="operadoras" />
 
@@ -51,23 +51,65 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick, watch, onBeforeUnmount } from 'vue'
 import { useOperadoras } from '../composables/useOperadoras'
 import OperadorasTable from '../components/OperadorasTable.vue'
 
 const scrollContainer = ref<HTMLElement | null>(null)
 const q = ref('')
 
-const { 
-  operadoras, 
-  total, 
-  loading, 
-  error, 
-  page, 
-  loadMore, 
-  resetBusca, 
-  includeSemDespesas 
+const {
+  operadoras,
+  total,
+  loading,
+  error,
+  page,
+  loadMore,
+  resetBusca,
+  includeSemDespesas
 } = useOperadoras()
+
+// ======================
+// Contagem regressiva
+// ======================
+const countdown = ref(59)
+let countdownInterval: number | null = null
+
+function startCountdown() {
+  stopCountdown()
+  countdown.value = 59
+
+  countdownInterval = window.setInterval(() => {
+    if (countdown.value > 0) countdown.value--
+  }, 1000)
+}
+
+function stopCountdown() {
+  if (countdownInterval !== null) {
+    clearInterval(countdownInterval)
+    countdownInterval = null
+  }
+}
+
+// Se começou a carregar a primeira página, inicia.
+// Se terminou ou deu erro, para.
+watch([loading, page, error], ([isLoading, currentPage, currentError]) => {
+  if (currentPage === 1 && isLoading) {
+    startCountdown()
+    return
+  }
+
+  // Parar quando terminar OU se aparecer erro
+  if (!isLoading || currentError) {
+    stopCountdown()
+  }
+})
+
+onBeforeUnmount(() => {
+  stopCountdown()
+})
+
+// ======================
 
 function buscar() {
   resetBusca(q.value)

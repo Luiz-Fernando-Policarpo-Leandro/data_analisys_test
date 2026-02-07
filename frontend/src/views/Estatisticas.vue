@@ -19,7 +19,6 @@
         v-for="op in stats?.top_5_operadoras" 
         :key="op.cnpj"
         :to="`/operadoras/${op.cnpj}`" 
-        target="_blank"
         class="item-operadora"
       >
         <div class="info">
