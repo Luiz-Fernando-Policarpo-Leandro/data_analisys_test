@@ -31,7 +31,8 @@ A aplicação:
 1. Faz requisição HTTP para a URL base
 2. Usa `BeautifulSoup` para parsear o HTML
 3. Extrai apenas links relevantes (`.zip`)
-4. Ignora diretórios e arquivos fora do padrão esperado
+4. verifica apartir do REGEX se ha `Eventos/Sinistros` na culuna `DESCRICAO`  
+5. Ignora diretórios e arquivos fora do padrão esperado
 
 ### Motivo da escolha
 
